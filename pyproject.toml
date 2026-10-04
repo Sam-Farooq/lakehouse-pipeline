@@ -1,0 +1,22 @@
+[project]
+name = "lakehouse-pipeline"
+version = "1.2.0"
+description = "Kafka to Delta Lake to BigQuery, orchestrated by Airflow and modelled in dbt"
+requires-python = ">=3.11"
+dependencies = [
+    "pyspark==3.5.3",
+    "delta-spark==3.2.0",
+    "confluent-kafka>=2.5.0",
+    "apache-airflow>=2.10.0",
+    "google-cloud-bigquery>=3.25.0",
+    "pydantic>=2.8.0",
+    "pydantic-settings>=2.4.0",
+    "great-expectations>=0.18.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.0", "ruff>=0.6.0", "dbt-bigquery>=1.8.0"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
