@@ -1,0 +1,48 @@
+{{- range $name, $spec := .Values.streams }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}
+  labels:
+    app.kubernetes.io/name: lakehouse
+    app.kubernetes.io/component: {{ $name }}
+spec:
+  # Exactly one. Two drivers on the same checkpoint corrupt it, and Delta will
+  # not tell you politely.
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: lakehouse
+      app.kubernetes.io/component: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: lakehouse
+        app.kubernetes.io/component: {{ $name }}
+    spec:
+      serviceAccountName: {{ $.Values.serviceAccount.name }}
+      containers:
+        - name: driver
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          args: ["python", "-m", "lakehouse.streaming.{{ $name }}"]
+          env:
+            - name: LH_KAFKA_BROKERS
+              value: {{ $.Values.kafka.brokers | quote }}
+            - name: LH_TOPIC
+              value: {{ $.Values.kafka.topic | quote }}
+            - name: LH_LAKE_ROOT
+              value: {{ $.Values.lake.root | quote }}
+            - name: LH_CHECKPOINT_ROOT
+              value: {{ $.Values.lake.checkpointRoot | quote }}
+          resources:
+            requests: {cpu: {{ $spec.driver.cpu | quote }}, memory: {{ $spec.driver.memory }}}
+            limits: {memory: {{ $spec.driver.memory }}}
+          ports: [{containerPort: 4040, name: spark-ui}]
+          readinessProbe:
+            httpGet: {path: /, port: spark-ui}
+            initialDelaySeconds: 45
+            periodSeconds: 15
+{{- end }}

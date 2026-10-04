@@ -1,0 +1,6 @@
+apiVersion: v2
+name: lakehouse-streams
+description: The two always-on Structured Streaming jobs
+type: application
+version: 1.2.0
+appVersion: "1.2.0"

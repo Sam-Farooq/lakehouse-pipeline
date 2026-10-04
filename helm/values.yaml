@@ -1,0 +1,27 @@
+image:
+  repository: ghcr.io/sam-farooq/lakehouse-pipeline
+  tag: ""          # defaults to .Chart.AppVersion
+  pullPolicy: IfNotPresent
+
+kafka:
+  brokers: kafka-headless.kafka.svc.cluster.local:9092
+  topic: transactions
+
+lake:
+  root: s3a://prod-lakehouse
+  checkpointRoot: s3a://prod-lakehouse/_checkpoints
+
+streams:
+  bronze:
+    # Driver memory is the one that matters: the Kafka offset ranges and the
+    # Delta transaction log live there, not on the executors.
+    driver: {cpu: "1", memory: 4Gi}
+    executor: {count: 3, cpu: "2", memory: 8Gi}
+  silver:
+    driver: {cpu: "1", memory: 4Gi}
+    executor: {count: 2, cpu: "2", memory: 8Gi}
+
+serviceAccount:
+  name: lakehouse
+  # IRSA. No long-lived keys in the cluster.
+  roleArn: ""
