@@ -17,6 +17,8 @@ from lakehouse.spark import build_session
 
 log = logging.getLogger(__name__)
 
+# TODO: pull this from the reference-data table instead of hard-coding it.
+# Adding NOK meant a redeploy of both streams, which is silly.
 VALID_CURRENCIES = ("EUR", "USD", "GBP", "CHF", "SEK")
 
 
