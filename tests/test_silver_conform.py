@@ -5,12 +5,13 @@ import pytest
 from pyspark.sql import Row
 
 from lakehouse.streaming.silver import conform
+from tests.conftest import BRONZE_IN
 
 T0 = datetime(2026, 3, 1, 12, 0, 0, tzinfo=UTC)
 
 
 def _df(spark, rows):
-    return spark.createDataFrame(rows)
+    return spark.createDataFrame(rows, schema=BRONZE_IN)
 
 
 def test_duplicate_transaction_ids_collapse(spark):

@@ -3,6 +3,7 @@ from datetime import UTC, date, datetime
 from pyspark.sql import Row
 
 from lakehouse.batch.gold import corridor_volume, daily_account_activity
+from tests.conftest import SILVER_OUT
 
 D = date(2026, 3, 1)
 
@@ -16,9 +17,7 @@ def _silver(spark):
         Row(event_date=date(2026, 2, 28), account_id="A", currency="EUR", amount=50.0,
             counterparty_id="z", country="DE", channel="card", is_high_value=False,
             occurred_at=datetime(2026, 2, 28, 9, tzinfo=UTC)),
-    ])
-
-
+    ], schema=SILVER_OUT)
 def test_aggregate_covers_only_the_run_date(spark):
     out = daily_account_activity(_silver(spark), D).collect()
     assert len(out) == 1 and out[0].txn_count == 2

@@ -3,12 +3,13 @@ from datetime import UTC, datetime
 from pyspark.sql import Row
 
 from lakehouse.quality.expectations import assert_blocking, run_checks
+from tests.conftest import QUALITY_IN
 
 T0 = datetime(2026, 3, 1, 12, 0, tzinfo=UTC)
 
 
 def _rows(spark, rows):
-    return spark.createDataFrame(rows)
+    return spark.createDataFrame(rows, schema=QUALITY_IN)
 
 
 def _row(**kw):
