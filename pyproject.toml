@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.3.0", "ruff==0.16.10", "dbt-bigquery>=1.8.0"]
+dev = ["pytest==9.1.1", "ruff==0.16.10", "dbt-bigquery==1.12.1"]
 
 [tool.ruff]
 line-length = 100
