@@ -13,8 +13,8 @@ class Settings(BaseSettings):
     lake_root: str = "s3a://lakehouse"
     checkpoint_root: str = "s3a://lakehouse/_checkpoints"
 
-    # 30s keeps the bronze table queryable at roughly the latency the fraud team
-    # asked for, without producing the thousands of tiny files a 1s trigger makes.
+    # 30s is the shortest trigger that does not shred the table into small
+    # files at this volume. A 1s trigger writes thousands of them a day.
     trigger_interval: str = "30 seconds"
     max_offsets_per_trigger: int = 200_000
 

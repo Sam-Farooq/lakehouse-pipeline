@@ -51,10 +51,13 @@ window is memory. Too short and a mobile client that buffered offline for
 ninety minutes gets counted twice. Too long and the state store grows until
 the driver dies at 3am.
 
-2 hours came from the arrival distribution in staging: the 99.9th percentile
-delay was 71 minutes. The producer in `src/lakehouse/producer/events.py`
-reproduces that shape, with a 5% late rate and a 3% duplicate rate, because a
-pipeline only tested on clean data has not been tested.
+2 hours is set against the synthetic producer in
+`src/lakehouse/producer/events.py`, which emits 5% of events late by a uniform
+5 to 110 minutes, so the window covers its worst case with roughly ten minutes
+to spare. Against real traffic this is the first number to re-measure.
+
+The producer also duplicates 3% of events, because a pipeline only tested on
+clean data has not been tested.
 
 ## Quality gates run before aggregation, not after
 
@@ -73,9 +76,10 @@ the dashboard, and is wrong until someone notices the totals are low.
 
 `optimizeWrite` and `autoCompact` are on. A 30 second trigger writes roughly
 2,900 files per partition per day otherwise, and read performance falls off a
-cliff within a week. The trigger interval itself is the other half of that
-tradeoff: 30 seconds was what the fraud team's latency requirement actually
-needed, and anything under it buys nothing and costs small files.
+cliff within a week. The trigger interval is the other half of
+that tradeoff: 30 seconds is the shortest interval that does not shred the
+table into small files at this volume, and going lower buys freshness nothing
+downstream reads.
 
 ## dbt
 

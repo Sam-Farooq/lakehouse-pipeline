@@ -22,7 +22,7 @@ COUNTRIES = ["DE", "FR", "NL", "ES", "IT", "PL", "SE", None]
 CHANNELS = ["card", "sepa", "swift", "wallet", None]
 CURRENCIES = ["EUR", "EUR", "EUR", "USD", "GBP", "CHF"]
 
-DUPLICATE_RATE = 0.03   # at-least-once delivery, as seen in staging
+DUPLICATE_RATE = 0.03   # at-least-once delivery redelivers on rebalance
 LATE_RATE = 0.05        # mobile clients that buffer offline
 
 
