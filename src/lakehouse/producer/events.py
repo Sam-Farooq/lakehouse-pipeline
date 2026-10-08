@@ -12,7 +12,7 @@ import json
 import random
 import time
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from confluent_kafka import Producer
 
@@ -63,7 +63,7 @@ def main() -> None:
     while not args.seconds or time.time() - started < args.seconds:
         batch_started = time.time()
         for _ in range(args.rate):
-            event = make_event(datetime.now(timezone.utc))
+            event = make_event(datetime.now(UTC))
             payload = json.dumps(event).encode()
             # Key on account so a given account's events keep their order
             # within a partition, which silver's merge relies on.

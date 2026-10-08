@@ -5,7 +5,12 @@ arrives null across a whole micro-batch. Inference is also a full extra pass
 over the data. Both reasons to declare it.
 """
 from pyspark.sql.types import (
-    DoubleType, IntegerType, StringType, StructField, StructType, TimestampType,
+    DoubleType,
+    IntegerType,
+    StringType,
+    StructField,
+    StructType,
+    TimestampType,
 )
 
 # What the producer puts on the topic.

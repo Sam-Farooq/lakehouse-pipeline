@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 
 from pyspark.sql import Row
 
@@ -10,12 +10,12 @@ D = date(2026, 3, 1)
 def _silver(spark):
     return spark.createDataFrame([
         Row(event_date=D, account_id="A", currency="EUR", amount=100.0, counterparty_id="x",
-            country="DE", channel="card", is_high_value=False, occurred_at=datetime(2026, 3, 1, 9)),
+            country="DE", channel="card", is_high_value=False, occurred_at=datetime(2026, 3, 1, 9, tzinfo=UTC)),
         Row(event_date=D, account_id="A", currency="EUR", amount=20000.0, counterparty_id="y",
-            country="FR", channel="swift", is_high_value=True, occurred_at=datetime(2026, 3, 1, 10)),
+            country="FR", channel="swift", is_high_value=True, occurred_at=datetime(2026, 3, 1, 10, tzinfo=UTC)),
         Row(event_date=date(2026, 2, 28), account_id="A", currency="EUR", amount=50.0,
             counterparty_id="z", country="DE", channel="card", is_high_value=False,
-            occurred_at=datetime(2026, 2, 28, 9)),
+            occurred_at=datetime(2026, 2, 28, 9, tzinfo=UTC)),
     ])
 
 

@@ -1,12 +1,12 @@
 """Conformance rules. These are the ones that corrupt money if they regress."""
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pytest
 from pyspark.sql import Row
 
 from lakehouse.streaming.silver import conform
 
-T0 = datetime(2026, 3, 1, 12, 0, 0)
+T0 = datetime(2026, 3, 1, 12, 0, 0, tzinfo=UTC)
 
 
 def _df(spark, rows):

@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from pyspark.sql import Row
 
 from lakehouse.quality.expectations import assert_blocking, run_checks
 
-T0 = datetime(2026, 3, 1, 12, 0)
+T0 = datetime(2026, 3, 1, 12, 0, tzinfo=UTC)
 
 
 def _rows(spark, rows):
@@ -12,8 +12,8 @@ def _rows(spark, rows):
 
 
 def _row(**kw):
-    base = dict(transaction_id="a", account_id="1", amount=10.0, currency="EUR",
-                country="DE", occurred_at=T0)
+    base = {"transaction_id": "a", "account_id": "1", "amount": 10.0,
+            "currency": "EUR", "country": "DE", "occurred_at": T0}
     return Row(**{**base, **kw})
 
 
