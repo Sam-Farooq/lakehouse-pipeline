@@ -27,8 +27,12 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
       - run: pip install dbt-bigquery dbt-core
+      - run: cd dbt && dbt deps
+      # parse only. It builds the manifest and validates every model, source
+      # and test without opening a connection. compile resolves refs through
+      # the adapter and needs real BigQuery credentials, so it belongs to the
+      # Airflow run against prod, not to a push on a public repo.
       - run: cd dbt && dbt parse --target ci
-      - run: cd dbt && dbt compile --target ci
 
   helm:
     runs-on: ubuntu-latest
