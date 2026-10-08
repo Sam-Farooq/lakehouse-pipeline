@@ -1,0 +1,23 @@
+# Committed so `dbt parse` and `dbt compile` run in CI without credentials.
+# Neither command opens a connection; they build the manifest and render SQL,
+# which is what is worth checking on every push. `dbt run` and `dbt test` need
+# a real warehouse and are driven by Airflow against the prod target.
+lakehouse:
+  target: ci
+  outputs:
+    ci:
+      type: bigquery
+      method: oauth
+      project: lakehouse-ci
+      dataset: analytics
+      location: EU
+      threads: 1
+
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS', '/dev/null') }}"
+      project: "{{ env_var('LH_BQ_PROJECT', '') }}"
+      dataset: "{{ env_var('LH_BQ_DATASET', 'analytics') }}"
+      location: EU
+      threads: 4
