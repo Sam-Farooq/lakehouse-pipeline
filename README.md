@@ -116,3 +116,32 @@ does not fail politely when that happens.
 reading. Each asserts a rule that costs money if it regresses, including the
 high-value boundary at exactly 10,000.00, which is the kind of off-by-one that
 only shows up in a quarterly report.
+
+## What this does not do
+
+Every other repository on this account carries a section like this. This one is
+the oldest and did not, which made it the only one here claiming things without
+saying what it gave up.
+
+- **The Kafka half is untested.** `streaming/bronze.py` opens a real
+  `readStream.format("kafka")` against `kafka.bootstrap.servers`, and the suite
+  is 12 tests across three files covering silver conform, the quality gates and
+  the gold aggregates. `bronze` appears in none of them. So the layer the
+  headline describes, Kafka to Delta, is the one layer nothing exercises. The
+  silver tests read from a Delta table that a fixture wrote, not from anything
+  bronze produced.
+- **The two hour watermark is calibrated against the synthetic producer, not
+  against traffic.** `producer/events.py` emits 5% of events late by a uniform
+  5 to 110 minutes, so two hours covers its worst case with about ten minutes
+  spare. That is a property of the generator. Real clients buffer for longer
+  than any uniform distribution predicts, and the failure is asymmetric: too
+  short double counts, too long grows the state store until the driver dies.
+- **No schema evolution.** Nothing sets `mergeSchema` or handles a payload that
+  gained a field. A producer adding one gets it dropped at the bronze cast
+  rather than carried, which is quiet in exactly the way a schema change should
+  not be.
+- **Nothing is ever pruned.** `optimizeWrite` and `autoCompact` keep the file
+  count down, and there is no `VACUUM` and no retention setting anywhere, so
+  every old version of every table is kept forever. Time travel works
+  indefinitely and so does the storage bill.
+
